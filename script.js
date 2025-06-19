@@ -26,6 +26,15 @@ const fases = [
     { nivel: 5, pares: 12, colunas: 6, linhas: 4 }
 ];
 
+// Função para obter o caminho base correto das imagens
+function getImagePath(nomeImagem) {
+    // Pega o caminho base da URL atual
+    const basePath = window.location.pathname.includes('bailarina-jogo-da-memoria') 
+        ? '/bailarina-jogo-da-memoria'  // No GitHub Pages
+        : '';  // Local
+    return `${basePath}/imagens/${nomeImagem}.png`;
+}
+
 // --- ESTADO DO JOGO ---
 let jogadorAtual = '', nivelAtual = 0, pontuacaoTotal = 0, estrelasTotal = 0;
 let cartas = [], cartaFoiVirada = false, travarTabuleiro = false, primeiraCarta, segundaCarta, paresEncontrados = 0, tentativasErradas = 0, segundosPassados = 0, cronometroInterval = null;
@@ -146,7 +155,7 @@ function construirTabuleiro() {
         // Criamos cada imagem com tratamento de erro
         const imgFrente = document.createElement('img');
         imgFrente.classList.add('frente-carta');
-        imgFrente.src = `./imagens/${nomeImagem}.png`;
+        imgFrente.src = getImagePath(nomeImagem);
         imgFrente.alt = nomeImagem;
         imgFrente.onerror = function() {
             console.log(`Erro ao carregar imagem: ${nomeImagem}.png`);
@@ -155,10 +164,12 @@ function construirTabuleiro() {
 
         const imgVerso = document.createElement('img');
         imgVerso.classList.add('verso-carta');
-        imgVerso.src = `./imagens/verso.png`;
+        imgVerso.src = getImagePath('verso');
         imgVerso.alt = 'Verso da Carta';
         imgVerso.onerror = function() {
             console.log('Erro ao carregar imagem do verso');
+            // Tentar carregar uma imagem de fallback ou mostrar um placeholder
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==';
         };
 
         // Garantir que as imagens carreguem antes de adicionar eventos
