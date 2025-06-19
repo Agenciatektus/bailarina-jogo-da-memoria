@@ -17,8 +17,8 @@ const btnVerRanking = document.querySelector('#btn-ver-ranking');
 const btnVoltar = document.querySelector('#btn-voltar');
 
 // --- CONFIGURAÇÃO ---
-const todasImagens = ['bailarina', 'sapatilha', 'laco', 'estrela', 'coroa', 'vestido', 'espelho', 'perfume'];
-const fases = [
+// LISTA DE IMAGENS CORRIGIDA PARA USAR OS SEUS FICHEIROS
+const todasImagens = ['bailarina', 'sapatilha', 'laco', 'coroa', 'elza-frozen', 'ana-frozen', 'olaf-2', 'moana', 'sonic-e-tales', 'stitch', 'tales', 'knokles'];const fases = [
     { nivel: 1, pares: 4, colunas: 4, linhas: 2 },
     { nivel: 2, pares: 6, colunas: 4, linhas: 3 },
     { nivel: 3, pares: 8, colunas: 4, linhas: 4 }
