@@ -70,8 +70,27 @@ body.tema-menina #input-nome { border-color: #f8bbd0; }
 .info-jogo { display: flex; justify-content: space-around; width: 90%; max-width: 400px; margin-bottom: 15px; font-size: 1.2em; color: #333; }
 .info-jogo span { background-color: rgba(255, 255, 255, 0.7); padding: 5px 15px; border-radius: 8px; min-width: 100px; text-align: center; }
 .tabuleiro-memoria { width: 95%; max-width: 600px; display: grid; grid-template-columns: repeat(var(--colunas, 4), 1fr); grid-template-rows: repeat(var(--linhas, 2), 1fr); gap: 10px; perspective: 1000px; min-height: 300px; }
-.carta-memoria { width: 100%; height: 120px; position: relative; cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-.frente-carta, .verso-carta { width: 100%; height: 100%; object-fit: cover; padding: 5px; position: absolute; border-radius: 10px; background: #ffffff; backface-visibility: hidden; }
+.carta-memoria { 
+    width: 100%; 
+    aspect-ratio: 1; 
+    min-height: 100px;
+    position: relative; 
+    cursor: pointer; 
+    transition: transform 0.6s; 
+    transform-style: preserve-3d; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+}
+.frente-carta, .verso-carta { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+    padding: 8px; 
+    position: absolute; 
+    border-radius: 10px; 
+    background: #ffffff; 
+    backface-visibility: hidden; 
+}
 .frente-carta { transform: rotateY(180deg); }
 .carta-memoria.virar { transform: rotateY(180deg); }
 .carta-memoria.par-encontrado { box-shadow: 0 0 10px 5px #69f0ae; border: 2px solid #00c853; }
@@ -103,16 +122,16 @@ body.tema-menina #input-nome { border-color: #f8bbd0; }
 @media (max-width: 500px) { 
     .modal-conteudo { width: 90%; padding: 20px 15px; } 
     .modal-conteudo h2 { font-size: 2em; } 
-    .carta-memoria { height: 70px; }
-    .tabuleiro-memoria { min-height: 180px; gap: 3px; }
+    .carta-memoria { height: 110px; }
+    .tabuleiro-memoria { min-height: 240px; gap: 8px; }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
-    .carta-memoria { height: 90px; }
-    .tabuleiro-memoria { min-height: 220px; gap: 6px; }
+    .carta-memoria { height: 130px; }
+    .tabuleiro-memoria { min-height: 280px; gap: 10px; }
 }
 
 @media (min-width: 769px) {
-    .carta-memoria { height: 120px; }
-    .tabuleiro-memoria { min-height: 300px; gap: 8px; }
+    .carta-memoria { height: 150px; }
+    .tabuleiro-memoria { min-height: 320px; gap: 12px; }
 }
