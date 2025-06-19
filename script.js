@@ -4,6 +4,8 @@ const telaJogo = document.querySelector('#tela-jogo');
 const telaRanking = document.querySelector('#tela-ranking');
 const tabuleiro = document.querySelector('.tabuleiro-memoria');
 const infoNivel = document.querySelector('#info-nivel');
+const tempoDisplay = document.querySelector('#tempo');
+const errosDisplay = document.querySelector('#erros');
 const modal = document.querySelector('#modal-mensagem');
 const modalTitulo = document.querySelector('#modal-titulo');
 const modalTexto = document.querySelector('#modal-texto');
@@ -28,14 +30,16 @@ let cartaFoiVirada = false;
 let travarTabuleiro = false;
 let primeiraCarta, segundaCarta;
 let paresEncontrados = 0;
+let tentativasErradas = 0;
+let segundosPassados = 0;
+let pontuacaoTotal = 0;
+let cronometroInterval = null;
 
 // --- FUNÇÕES DE GESTÃO DE TELAS ---
 function mostrarTela(nomeTela) {
-    // Esconde todas as telas
     telaInicial.classList.add('escondido');
     telaJogo.classList.add('escondido');
     telaRanking.classList.add('escondido');
-    // Mostra a tela desejada
     document.querySelector(`#${nomeTela}`).classList.remove('escondido');
 }
 
@@ -46,29 +50,37 @@ function iniciarDesafio() {
         alert('Por favor, digite um nome para começar!');
         return;
     }
-
-    // `localStorage` é uma "memória" do navegador que guarda dados mesmo depois de fechar a página.
-    // Usamos `JSON.parse` para transformar o texto guardado de volta num array.
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-
-    // Verificamos se o nome já existe no ranking
     const nomeExiste = ranking.some(jogador => jogador.nome.toLowerCase() === nome.toLowerCase());
-
     if (nomeExiste) {
         alert('Este nome já está no ranking. Por favor, escolha outro.');
     } else {
         jogadorAtual = nome;
         nivelAtual = 0;
+        pontuacaoTotal = 0;
         mostrarTela('tela-jogo');
         construirTabuleiro();
     }
 }
 
-// --- LÓGICA DO JOGO (a maior parte continua igual) ---
+// --- LÓGICA DO CRONÓMETRO ---
+function iniciarCronometro() {
+    segundosPassados = 0;
+    tempoDisplay.textContent = '0s';
+    clearInterval(cronometroInterval);
+    cronometroInterval = setInterval(() => {
+        segundosPassados++;
+        tempoDisplay.textContent = `${segundosPassados}s`;
+    }, 1000);
+}
+
+// --- LÓGICA DO JOGO ---
 function construirTabuleiro() {
     tabuleiro.innerHTML = '';
     const configFase = fases[nivelAtual];
     paresEncontrados = 0;
+    tentativasErradas = 0;
+    errosDisplay.textContent = 0;
     infoNivel.textContent = `Nível ${configFase.nivel}`;
     tabuleiro.style.setProperty('--colunas', configFase.colunas);
     tabuleiro.style.setProperty('--linhas', configFase.linhas);
@@ -79,27 +91,84 @@ function construirTabuleiro() {
         const carta = document.createElement('div');
         carta.classList.add('carta-memoria');
         carta.dataset.personagem = nomeImagem;
-        carta.innerHTML = `...`; // O conteúdo da carta continua igual
-        carta.innerHTML = `
-            <img class="frente-carta" src="imagens/${nomeImagem}.png" alt="${nomeImagem}">
-            <img class="verso-carta" src="imagens/verso.png" alt="Verso da Carta">
-        `;
+        carta.innerHTML = `<img class="frente-carta" src="imagens/${nomeImagem}.png" alt="${nomeImagem}"><img class="verso-carta" src="imagens/verso.png" alt="Verso da Carta">`;
         tabuleiro.appendChild(carta);
     });
     cartas = document.querySelectorAll('.carta-memoria');
     cartas.forEach(carta => carta.addEventListener('click', virarCarta));
+    iniciarCronometro();
 }
 
-// O resto das funções do jogo (virarCarta, verificarPar, etc.) continuam aqui...
-// ... (COLE AQUI O RESTO DAS FUNÇÕES DO SCRIPT ANTERIOR, SEM MUDANÇAS) ...
-function virarCarta() { if (travarTabuleiro || this.classList.contains('virar') || this === primeiraCarta) return; this.classList.add('virar'); if (!cartaFoiVirada) { cartaFoiVirada = true; primeiraCarta = this; } else { segundaCarta = this; travarTabuleiro = true; verificarPar(); } }
-function verificarPar() { let ehPar = primeiraCarta.dataset.personagem === segundaCarta.dataset.personagem; ehPar ? processarParCorreto() : desvirarCartas(); }
-function processarParCorreto() { primeiraCarta.classList.add('par-encontrado'); segundaCarta.classList.add('par-encontrado'); paresEncontrados++; destravarEResetarJogada(); if (paresEncontrados === fases[nivelAtual].pares) { setTimeout(() => { nivelAtual++; if (nivelAtual < fases.length) { mostrarMensagem(`Nível ${fases[nivelAtual-1].nivel} Completo!`, 'Prepare-se para o próximo desafio!'); setTimeout(() => { esconderMensagem(); construirTabuleiro(); }, 2500); } else { mostrarMensagem(`Parabéns, ${jogadorAtual}!`, 'Você completou todos os níveis!'); /* Adicionaremos o botão de reiniciar aqui na Fase 4 */ } }, 1000); } }
-function desvirarCartas() { setTimeout(() => { primeiraCarta.classList.remove('virar'); segundaCarta.classList.remove('virar'); destravarEResetarJogada(); }, 1200); }
-function destravarEResetarJogada() { [cartaFoiVirada, travarTabuleiro] = [false, false]; [primeiraCarta, segundaCarta] = [null, null]; }
-function mostrarMensagem(titulo, texto) { modalTitulo.textContent = titulo; modalTexto.textContent = texto; modal.classList.add('visivel'); }
-function esconderMensagem() { modal.classList.remove('visivel'); }
+function virarCarta() {
+    if (travarTabuleiro || this.classList.contains('virar') || this === primeiraCarta) return;
+    this.classList.add('virar');
+    if (!cartaFoiVirada) {
+        cartaFoiVirada = true;
+        primeiraCarta = this;
+    } else {
+        segundaCarta = this;
+        travarTabuleiro = true;
+        verificarPar();
+    }
+}
 
+function verificarPar() {
+    let ehPar = primeiraCarta.dataset.personagem === segundaCarta.dataset.personagem;
+    ehPar ? processarParCorreto() : desvirarCartas();
+}
+
+function processarParCorreto() {
+    primeiraCarta.classList.add('par-encontrado');
+    segundaCarta.classList.add('par-encontrado');
+    paresEncontrados++;
+    destravarEResetarJogada();
+    if (paresEncontrados === fases[nivelAtual].pares) {
+        clearInterval(cronometroInterval);
+        const PONTOS_BASE_NIVEL = 1000;
+        const PENALIDADE_ERRO = 30;
+        const PENALIDADE_TEMPO = 5;
+        let pontuacaoNivel = PONTOS_BASE_NIVEL - (tentativasErradas * PENALIDADE_ERRO) - (segundosPassados * PENALIDADE_TEMPO);
+        if (pontuacaoNivel < 100) pontuacaoNivel = 100;
+        pontuacaoTotal += pontuacaoNivel;
+        setTimeout(() => {
+            nivelAtual++;
+            if (nivelAtual < fases.length) {
+                mostrarMensagem(`Nível ${fases[nivelAtual-1].nivel} Completo!`, `Você fez ${pontuacaoNivel} pontos.`);
+                setTimeout(() => {
+                    esconderMensagem();
+                    construirTabuleiro();
+                }, 2500);
+            } else {
+                mostrarMensagem(`Parabéns, ${jogadorAtual}!`, `Desafio concluído! Sua pontuação final foi: ${pontuacaoTotal} pontos.`);
+            }
+        }, 1000);
+    }
+}
+
+function desvirarCartas() {
+    tentativasErradas++;
+    errosDisplay.textContent = tentativasErradas;
+    setTimeout(() => {
+        primeiraCarta.classList.remove('virar');
+        segundaCarta.classList.remove('virar');
+        destravarEResetarJogada();
+    }, 1200);
+}
+
+function destravarEResetarJogada() {
+    [cartaFoiVirada, travarTabuleiro] = [false, false];
+    [primeiraCarta, segundaCarta] = [null, null];
+}
+
+function mostrarMensagem(titulo, texto) {
+    modalTitulo.textContent = titulo;
+    modalTexto.textContent = texto;
+    modal.classList.add('visivel');
+}
+
+function esconderMensagem() {
+    modal.classList.remove('visivel');
+}
 
 // --- EVENTOS DOS BOTÕES ---
 btnIniciar.addEventListener('click', iniciarDesafio);
