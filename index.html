@@ -11,7 +11,7 @@
     <section id="tela-inicial" class="tela">
         <h1>Jogo da Memória</h1>
         <div class="form-jogador">
-            <input type="text" id="input-nome" placeholder="Digite seu nome">
+            <input type="text" id="input-nome" placeholder="Digite seu nome" maxlength="15">
             <button id="btn-iniciar">Iniciar Desafio</button>
         </div>
         <button id="btn-ver-ranking" class="btn-secundario">Ver Ranking</button>
@@ -19,6 +19,10 @@
 
     <section id="tela-jogo" class="tela escondido">
         <h2 id="info-nivel">Nível 1</h2>
+        <div class="info-jogo">
+            <span>Tempo: <strong id="tempo">0s</strong></span>
+            <span>Erros: <strong id="erros">0</strong></span>
+        </div>
         <section class="tabuleiro-memoria"></section>
     </section>
 
