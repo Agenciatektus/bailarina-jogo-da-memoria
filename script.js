@@ -41,7 +41,10 @@ function mostrarTela(nomeTela) {
 // --- GESTÃO DE JOGADOR E RANKING ---
 function iniciarDesafio() {
     const nome = inputNome.value.trim();
-    if (nome === '') { alert('Por favor, digite um nome para começar!'); return; }
+    if (nome === '') { 
+        alert('Por favor, digite um nome para começar!'); 
+        return; 
+    }
     
     // Aplicar tema baseado na seleção
     const generoSelecionado = document.querySelector('input[name="genero"]:checked').value;
@@ -51,10 +54,16 @@ function iniciarDesafio() {
     const jogadorExistente = ranking.find(jogador => jogador.nome.toLowerCase() === nome.toLowerCase());
     
     if (jogadorExistente) {
-        const continuar = confirm(`Você já jogou antes e tem ${jogadorExistente.pontos} pontos no ranking. Deseja jogar novamente para tentar uma pontuação melhor?`);
-        if (!continuar) return;
+        const continuar = confirm(`Olá ${nome}! Você já jogou antes e tem ${jogadorExistente.pontos} pontos no ranking.\n\nDeseja jogar novamente para tentar superar sua pontuação?`);
+        if (!continuar) {
+            // Limpar o campo de nome para que o usuário possa tentar outro nome
+            inputNome.value = '';
+            inputNome.focus();
+            return;
+        }
     }
     
+    // Iniciar o jogo
     jogadorAtual = nome;
     nivelAtual = 0;
     pontuacaoTotal = 0;
@@ -215,6 +224,12 @@ btnVerRanking.addEventListener('click', mostrarRanking);
 btnVoltar.addEventListener('click', () => { 
     inputNome.value = ''; 
     document.body.className = ''; // Resetar para tema neutro
-    document.querySelector('input[name="genero"][value="menina"]').checked = true; // Resetar seleção
+    
+    // Resetar seleção de gênero com verificação de segurança
+    const radioMenina = document.querySelector('input[name="genero"][value="menina"]');
+    if (radioMenina) {
+        radioMenina.checked = true;
+    }
+    
     mostrarTela('tela-inicial'); 
 });
