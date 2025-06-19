@@ -28,10 +28,24 @@ const fases = [
 
 // Função para obter o caminho correto das imagens
 function getImagePath(nomeImagem) {
-    // Verifica se está no GitHub Pages
-    const isGitHubPages = window.location.hostname.includes('github.io');
+    // Verifica se está no GitHub Pages de várias formas
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
+    console.log('Debug - Hostname:', hostname);
+    console.log('Debug - Pathname:', pathname);
+    
+    const isGitHubPages = hostname.includes('github.io') || 
+                         pathname.includes('/bailarina-jogo-da-memoria/') ||
+                         hostname === 'petersonddb.github.io';
+    
+    console.log('Debug - Is GitHub Pages?', isGitHubPages);
+    
+    // Define o caminho base
     const basePath = isGitHubPages ? '/bailarina-jogo-da-memoria' : '';
-    return `${basePath}/imagens/${nomeImagem}.png`;
+    const fullPath = `${basePath}/imagens/${nomeImagem}.png`;
+    
+    console.log('Debug - Full image path:', fullPath);
+    return fullPath;
 }
 
 // --- ESTADO DO JOGO ---
@@ -133,6 +147,7 @@ function iniciarCronometro() {
 
 // --- LÓGICA DO JOGO ---
 function construirTabuleiro() {
+    console.log('Debug - Iniciando construção do tabuleiro');
     tabuleiro.innerHTML = '';
     const configFase = fases[nivelAtual];
     paresEncontrados = 0;
@@ -145,8 +160,11 @@ function construirTabuleiro() {
     const cartasParaJogo = [...imagensDaFase, ...imagensDaFase];
     cartasParaJogo.sort(() => Math.random() - 0.5);
 
+    console.log('Debug - Imagens selecionadas para a fase:', imagensDaFase);
+
     // Construção das cartas com carregamento robusto de imagens
-    cartasParaJogo.forEach(nomeImagem => {
+    cartasParaJogo.forEach((nomeImagem, index) => {
+        console.log(`Debug - Criando carta ${index + 1} com imagem: ${nomeImagem}`);
         const carta = document.createElement('div');
         carta.classList.add('carta-memoria');
         carta.dataset.personagem = nomeImagem;
@@ -154,27 +172,36 @@ function construirTabuleiro() {
         // Criamos cada imagem com tratamento de erro
         const imgFrente = document.createElement('img');
         imgFrente.classList.add('frente-carta');
-        imgFrente.src = getImagePath(nomeImagem);
+        const caminhoImagem = getImagePath(nomeImagem);
+        imgFrente.src = caminhoImagem;
         imgFrente.alt = nomeImagem;
         imgFrente.onerror = function() {
             console.error(`Erro ao carregar imagem: ${this.src}`);
+            console.log('Tentando carregar imagem de verso como fallback');
             this.src = getImagePath('verso');
+            // Adiciona classe para identificar cartas com erro
+            carta.classList.add('erro-carregamento');
         };
 
         const imgVerso = document.createElement('img');
         imgVerso.classList.add('verso-carta');
-        imgVerso.src = getImagePath('verso');
+        const caminhoVerso = getImagePath('verso');
+        imgVerso.src = caminhoVerso;
         imgVerso.alt = 'Verso da Carta';
         imgVerso.onerror = function() {
             console.error(`Erro ao carregar imagem do verso: ${this.src}`);
+            this.alt = 'Erro ao carregar imagem';
+            carta.classList.add('erro-carregamento-verso');
         };
 
         // Adicionar evento de carregamento para debug
         imgFrente.onload = function() {
             console.log(`Imagem carregada com sucesso: ${this.src}`);
+            carta.classList.add('imagem-carregada');
         };
         imgVerso.onload = function() {
             console.log(`Verso carregado com sucesso: ${this.src}`);
+            carta.classList.add('verso-carregado');
         };
 
         // Garantir que as imagens carreguem antes de adicionar eventos
@@ -186,6 +213,20 @@ function construirTabuleiro() {
     cartas = document.querySelectorAll('.carta-memoria');
     cartas.forEach(carta => carta.addEventListener('click', virarCarta));
     iniciarCronometro();
+    
+    // Verificação final de carregamento
+    setTimeout(() => {
+        const cartasComErro = document.querySelectorAll('.erro-carregamento').length;
+        const cartasComErroVerso = document.querySelectorAll('.erro-carregamento-verso').length;
+        const cartasCarregadas = document.querySelectorAll('.imagem-carregada').length;
+        const versosCarregados = document.querySelectorAll('.verso-carregado').length;
+        
+        console.log('Debug - Status final do carregamento:');
+        console.log(`- Cartas com erro: ${cartasComErro}`);
+        console.log(`- Cartas com erro no verso: ${cartasComErroVerso}`);
+        console.log(`- Imagens carregadas com sucesso: ${cartasCarregadas}`);
+        console.log(`- Versos carregados com sucesso: ${versosCarregados}`);
+    }, 1000);
 }
 
 function virarCarta() { if (travarTabuleiro || this.classList.contains('virar') || this === primeiraCarta) return; this.classList.add('virar'); if (!cartaFoiVirada) { cartaFoiVirada = true; primeiraCarta = this; } else { segundaCarta = this; travarTabuleiro = true; verificarPar(); } }
