@@ -7,12 +7,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Jogo da Memória da Bailarina</h1>
-    <h2 id="info-nivel">Nível 1</h2>
 
-    <section class="tabuleiro-memoria"></section>
+    <section id="tela-inicial" class="tela">
+        <h1>Jogo da Memória</h1>
+        <div class="form-jogador">
+            <input type="text" id="input-nome" placeholder="Digite seu nome">
+            <button id="btn-iniciar">Iniciar Desafio</button>
+        </div>
+        <button id="btn-ver-ranking" class="btn-secundario">Ver Ranking</button>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="tela-jogo" class="tela escondido">
+        <h2 id="info-nivel">Nível 1</h2>
+        <section class="tabuleiro-memoria"></section>
+    </section>
+
+    <section id="tela-ranking" class="tela escondido">
+        <h2>Ranking de Jogadores</h2>
+        <div id="lista-ranking">
+            </div>
+        <button id="btn-voltar" class="btn-secundario">Voltar ao Início</button>
+    </section>
 
     <div id="modal-mensagem">
         <div class="modal-conteudo">
@@ -20,5 +35,7 @@
             <p id="modal-texto"></p>
         </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
