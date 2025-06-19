@@ -12,6 +12,21 @@
         <h1>Jogo da Memória</h1>
         <div class="form-jogador">
             <input type="text" id="input-nome" placeholder="Digite seu nome" maxlength="15">
+            
+            <div class="selecao-genero">
+                <p>Escolha seu tema:</p>
+                <label class="radio-genero">
+                    <input type="radio" name="genero" value="menina" checked>
+                    <span class="radio-custom"></span>
+                    Menina 💗
+                </label>
+                <label class="radio-genero">
+                    <input type="radio" name="genero" value="menino">
+                    <span class="radio-custom"></span>
+                    Menino 💙
+                </label>
+            </div>
+            
             <button id="btn-iniciar">Iniciar Desafio</button>
         </div>
         <button id="btn-ver-ranking" class="btn-secundario">Ver Ranking</button>

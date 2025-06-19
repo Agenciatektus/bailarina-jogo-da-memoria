@@ -42,24 +42,46 @@ function mostrarTela(nomeTela) {
 function iniciarDesafio() {
     const nome = inputNome.value.trim();
     if (nome === '') { alert('Por favor, digite um nome para começar!'); return; }
+    
+    // Aplicar tema baseado na seleção
+    const generoSelecionado = document.querySelector('input[name="genero"]:checked').value;
+    document.body.className = generoSelecionado === 'menino' ? 'tema-menino' : 'tema-menina';
+    
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    const nomeExiste = ranking.some(jogador => jogador.nome.toLowerCase() === nome.toLowerCase());
-    if (nomeExiste) {
-        alert('Este nome já está no ranking. Por favor, escolha outro.');
-    } else {
-        jogadorAtual = nome;
-        nivelAtual = 0;
-        pontuacaoTotal = 0;
-        estrelasTotal = 0;
-        mostrarTela('tela-jogo');
-        construirTabuleiro();
+    const jogadorExistente = ranking.find(jogador => jogador.nome.toLowerCase() === nome.toLowerCase());
+    
+    if (jogadorExistente) {
+        const continuar = confirm(`Você já jogou antes e tem ${jogadorExistente.pontos} pontos no ranking. Deseja jogar novamente para tentar uma pontuação melhor?`);
+        if (!continuar) return;
     }
+    
+    jogadorAtual = nome;
+    nivelAtual = 0;
+    pontuacaoTotal = 0;
+    estrelasTotal = 0;
+    mostrarTela('tela-jogo');
+    construirTabuleiro();
 }
 
 function salvarPontuacao() {
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    const novaPontuacao = { nome: jogadorAtual, pontos: pontuacaoTotal, estrelas: estrelasTotal };
-    ranking.push(novaPontuacao);
+    const jogadorExistente = ranking.find(jogador => jogador.nome.toLowerCase() === jogadorAtual.toLowerCase());
+    
+    if (jogadorExistente) {
+        // Se a nova pontuação for melhor, atualiza
+        if (pontuacaoTotal > jogadorExistente.pontos) {
+            jogadorExistente.pontos = pontuacaoTotal;
+            jogadorExistente.estrelas = estrelasTotal;
+            mostrarMensagem('Novo Recorde! 🎉', `Parabéns! Você superou sua pontuação anterior!`);
+        } else {
+            mostrarMensagem('Boa Tentativa! 👍', `Você fez ${pontuacaoTotal} pontos, mas seu recorde continua sendo ${jogadorExistente.pontos} pontos.`);
+        }
+    } else {
+        // Novo jogador
+        const novaPontuacao = { nome: jogadorAtual, pontos: pontuacaoTotal, estrelas: estrelasTotal };
+        ranking.push(novaPontuacao);
+    }
+    
     localStorage.setItem('ranking', JSON.stringify(ranking));
 }
 

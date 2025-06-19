@@ -38,7 +38,32 @@ body.tema-menina {
 #input-nome { padding: 12px; font-size: 1.1em; border-radius: 8px; border: 2px solid #f8bbd0; margin-bottom: 10px; text-align: center; }
 #btn-iniciar { padding: 12px; font-size: 1.2em; font-weight: bold; color: white; background-color: #ad1457; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; }
 #btn-iniciar:hover { background-color: #880e4f; }
-.btn-secundario { background: none; border: none; color: #ad1457; margin-top: 20px; font-size: 1em; cursor: pointer; text-decoration: underline; }
+.btn-secundario { background: none; border: none; color: #6c757d; margin-top: 20px; font-size: 1em; cursor: pointer; text-decoration: underline; }
+
+/* SELEÇÃO DE GÊNERO */
+.selecao-genero { margin: 15px 0; text-align: center; }
+.selecao-genero p { margin-bottom: 10px; font-weight: bold; color: #555; }
+.radio-genero { display: flex; align-items: center; justify-content: center; margin: 8px 0; cursor: pointer; font-size: 1.1em; }
+.radio-genero input[type="radio"] { display: none; }
+.radio-custom { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 8px; position: relative; transition: all 0.3s; }
+.radio-genero input[type="radio"]:checked + .radio-custom { border-color: #4caf50; background-color: #4caf50; }
+.radio-genero input[type="radio"]:checked + .radio-custom::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+/* TEMAS PARA BOTÕES */
+body.tema-menino .btn-secundario { color: #1976d2; }
+body.tema-menino #btn-iniciar { background-color: #1976d2; }
+body.tema-menino #btn-iniciar:hover { background-color: #0d47a1; }
+body.tema-menino #input-nome { border-color: #90caf9; }
+
+body.tema-menina .btn-secundario { color: #ad1457; }
+body.tema-menina #btn-iniciar { background-color: #ad1457; }
+body.tema-menina #btn-iniciar:hover { background-color: #880e4f; }
+body.tema-menina #input-nome { border-color: #f8bbd0; }
+
+/* TEMA NEUTRO PADRÃO */
+#btn-iniciar { background-color: #6c757d; }
+#btn-iniciar:hover { background-color: #5a6268; }
+#input-nome { border-color: #ced4da; }
 
 /* TELA DO JOGO */
 #tela-jogo h2#info-nivel { margin-bottom: 15px; font-size: 1.5em; color: #ad1457; }
