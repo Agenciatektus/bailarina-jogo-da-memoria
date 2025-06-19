@@ -105,7 +105,7 @@ function construirTabuleiro() {
     const imagensDaFase = todasImagens.slice(0, configFase.pares);
     const cartasParaJogo = [...imagensDaFase, ...imagensDaFase];
     cartasParaJogo.sort(() => Math.random() - 0.5);
-    
+
     // Construção das cartas com carregamento robusto de imagens
     cartasParaJogo.forEach(nomeImagem => {
         const carta = document.createElement('div');
@@ -161,7 +161,7 @@ function processarParCorreto() {
         let pontuacaoNivel = PONTOS_BASE_NIVEL - (tentativasErradas * PENALIDADE_ERRO) - (segundosPassados * PENALIDADE_TEMPO);
         if (pontuacaoNivel < 100) pontuacaoNivel = 100;
         pontuacaoTotal += pontuacaoNivel;
-        
+
         const estrelasNivel = calcularEstrelas(pontuacaoNivel, tentativasErradas, segundosPassados);
         estrelasTotal += estrelasNivel;
         setTimeout(() => {
@@ -190,4 +190,9 @@ function esconderMensagem() { modal.classList.remove('visivel'); }
 // --- EVENTOS DOS BOTÕES ---
 btnIniciar.addEventListener('click', iniciarDesafio);
 btnVerRanking.addEventListener('click', mostrarRanking);
-btnVoltar.addEventListener('click', () => { inputNome.value = ''; mostrarTela('tela-inicial'); });
+btnVoltar.addEventListener('click', () => { 
+    inputNome.value = ''; 
+    document.body.className = ''; // Resetar para tema neutro
+    document.querySelector('input[name="genero"][value="menina"]').checked = true; // Resetar seleção
+    mostrarTela('tela-inicial'); 
+});
