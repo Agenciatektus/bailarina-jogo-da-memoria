@@ -6,16 +6,32 @@ const modalTitulo = document.querySelector('#modal-titulo');
 const modalTexto = document.querySelector('#modal-texto');
 
 // --- CONFIGURAÇÃO DAS FASES ---
-const todasImagens = ['bailarina', 'sapatilha', 'laco', 'estrela', 'coroa', 'vestido', 'espelho', 'perfume'];
+
+// LISTA DE IMAGENS ATUALIZADA COM OS SEUS NOVOS FICHEIROS
+const todasImagens = [
+    'bailarina', 
+    'sapatilha', 
+    'laco', 
+    'coroa',
+    'elza-frozen',
+    'ana-frozen',
+    'olaf-2',
+    'moana',
+    'sonic-e-tales',
+    'shadow',
+    'stitch',
+    'tales' // Adicionei 12 personagens para termos mais variedade nas fases
+];
+
 const fases = [
-    { nivel: 1, pares: 4, colunas: 4, linhas: 2 }, // 8 cartas
-    { nivel: 2, pares: 6, colunas: 4, linhas: 3 }, // 12 cartas
-    { nivel: 3, pares: 8, colunas: 4, linhas: 4 }  // 16 cartas
+    { nivel: 1, pares: 4, colunas: 4, linhas: 2 }, // Usa as 4 primeiras imagens da lista
+    { nivel: 2, pares: 6, colunas: 4, linhas: 3 }, // Usa as 6 primeiras imagens da lista
+    { nivel: 3, pares: 8, colunas: 4, linhas: 4 }  // Usa as 8 primeiras imagens da lista
 ];
 
 // --- VARIÁVEIS DE ESTADO DO JOGO ---
 let nivelAtual = 0;
-let cartas = []; // O array de cartas agora é dinâmico
+let cartas = []; 
 let cartaFoiVirada = false;
 let travarTabuleiro = false;
 let primeiraCarta, segundaCarta;
@@ -38,38 +54,25 @@ function embaralhar(array) {
 }
 
 function construirTabuleiro() {
-    // Limpa o tabuleiro anterior
     tabuleiro.innerHTML = '';
-    
-    // Pega a configuração da fase atual
     const configFase = fases[nivelAtual];
     paresEncontrados = 0;
     infoNivel.textContent = `Nível ${configFase.nivel}`;
-
-    // Define o layout da grelha via variáveis CSS
     tabuleiro.style.setProperty('--colunas', configFase.colunas);
     tabuleiro.style.setProperty('--linhas', configFase.linhas);
-
-    // Cria a lista de imagens para a fase atual
     const imagensDaFase = todasImagens.slice(0, configFase.pares);
-    const cartasParaJogo = [...imagensDaFase, ...imagensDaFase]; // Duplica para formar os pares
-    
+    const cartasParaJogo = [...imagensDaFase, ...imagensDaFase];
     embaralhar(cartasParaJogo);
-
-    // Cria os elementos de carta e os adiciona ao tabuleiro
     cartasParaJogo.forEach(nomeImagem => {
         const carta = document.createElement('div');
         carta.classList.add('carta-memoria');
         carta.dataset.personagem = nomeImagem;
-
         carta.innerHTML = `
             <img class="frente-carta" src="imagens/${nomeImagem}.png" alt="${nomeImagem}">
             <img class="verso-carta" src="imagens/verso.png" alt="Verso da Carta">
         `;
         tabuleiro.appendChild(carta);
     });
-
-    // Adiciona os ouvintes de clique às novas cartas
     cartas = document.querySelectorAll('.carta-memoria');
     cartas.forEach(carta => carta.addEventListener('click', virarCarta));
 }
@@ -97,12 +100,9 @@ function processarParCorreto() {
     segundaCarta.classList.add('par-encontrado');
     paresEncontrados++;
     destravarEResetarJogada();
-
-    // Verifica se a fase terminou
     if (paresEncontrados === fases[nivelAtual].pares) {
         setTimeout(() => {
             nivelAtual++;
-            // Verifica se há uma próxima fase
             if (nivelAtual < fases.length) {
                 mostrarMensagem(`Nível ${fases[nivelAtual-1].nivel} Completo!`, 'Prepare-se para o próximo desafio!');
                 setTimeout(() => {
@@ -110,7 +110,6 @@ function processarParCorreto() {
                     construirTabuleiro();
                 }, 2500);
             } else {
-                // Se não houver mais fases, o jogo terminou!
                 mostrarMensagem('Parabéns!', 'Você completou todos os níveis!');
             }
         }, 1000);
@@ -131,6 +130,4 @@ function destravarEResetarJogada() {
 }
 
 // --- INICIA O JOGO ---
-// Nota: Certifique-se de ter imagens para todos os personagens listados em 'todasImagens'.
-// Adicione 'espelho.png' e 'perfume.png' à sua pasta 'imagens' para a fase 3.
 construirTabuleiro();
