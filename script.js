@@ -155,21 +155,27 @@ function construirTabuleiro() {
         // Criamos cada imagem com tratamento de erro
         const imgFrente = document.createElement('img');
         imgFrente.classList.add('frente-carta');
-        imgFrente.src = getImagePath(nomeImagem);
+        imgFrente.src = `/imagens/${nomeImagem}.png`;
         imgFrente.alt = nomeImagem;
         imgFrente.onerror = function() {
-            console.log(`Erro ao carregar imagem: ${nomeImagem}.png`);
-            this.src = './imagens/verso.png'; // Fallback para verso
+            console.error(`Erro ao carregar imagem: ${this.src}`);
+            this.src = '/imagens/verso.png';
         };
 
         const imgVerso = document.createElement('img');
         imgVerso.classList.add('verso-carta');
-        imgVerso.src = getImagePath('verso');
+        imgVerso.src = '/imagens/verso.png';
         imgVerso.alt = 'Verso da Carta';
         imgVerso.onerror = function() {
-            console.log('Erro ao carregar imagem do verso');
-            // Tentar carregar uma imagem de fallback ou mostrar um placeholder
-            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==';
+            console.error(`Erro ao carregar imagem do verso: ${this.src}`);
+        };
+
+        // Adicionar evento de carregamento para debug
+        imgFrente.onload = function() {
+            console.log(`Imagem carregada com sucesso: ${this.src}`);
+        };
+        imgVerso.onload = function() {
+            console.log(`Verso carregado com sucesso: ${this.src}`);
         };
 
         // Garantir que as imagens carreguem antes de adicionar eventos
