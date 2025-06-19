@@ -33,17 +33,76 @@ body.tema-menina {
 .tela { width: 100%; display: flex; flex-direction: column; align-items: center; }
 
 /* TELA INICIAL */
-#tela-inicial h1 { font-size: 2.5em; margin-bottom: 20px; }
-.form-jogador { display: flex; flex-direction: column; width: 90%; max-width: 300px; }
-#input-nome { padding: 12px; font-size: 1.1em; border-radius: 8px; border: 2px solid #f8bbd0; margin-bottom: 10px; text-align: center; }
-#btn-iniciar { padding: 12px; font-size: 1.2em; font-weight: bold; color: white; background-color: #ad1457; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; }
+#tela-inicial { 
+    justify-content: center; 
+    min-height: 100vh; 
+    padding: 40px 20px; 
+}
+#tela-inicial h1 { 
+    font-size: 2.5em; 
+    margin-bottom: 40px; 
+    text-align: center;
+}
+.form-jogador { 
+    display: flex; 
+    flex-direction: column; 
+    width: 90%; 
+    max-width: 300px; 
+    align-items: center;
+    margin-bottom: 30px;
+}
+#input-nome { 
+    padding: 15px; 
+    font-size: 1.1em; 
+    border-radius: 8px; 
+    border: 2px solid #f8bbd0; 
+    margin-bottom: 25px; 
+    text-align: center; 
+    width: 100%;
+}
+#btn-iniciar { 
+    padding: 15px 30px; 
+    font-size: 1.2em; 
+    font-weight: bold; 
+    color: white; 
+    background-color: #ad1457; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+    width: 100%;
+    margin-bottom: 20px;
+}
 #btn-iniciar:hover { background-color: #880e4f; }
-.btn-secundario { background: none; border: none; color: #6c757d; margin-top: 20px; font-size: 1em; cursor: pointer; text-decoration: underline; }
+.btn-secundario { 
+    background: none; 
+    border: none; 
+    color: #6c757d; 
+    font-size: 1em; 
+    cursor: pointer; 
+    text-decoration: underline; 
+    padding: 10px;
+}
 
 /* SELEÇÃO DE GÊNERO */
-.selecao-genero { margin: 15px 0; text-align: center; }
-.selecao-genero p { margin-bottom: 10px; font-weight: bold; color: #555; }
-.radio-genero { display: flex; align-items: center; justify-content: center; margin: 8px 0; cursor: pointer; font-size: 1.1em; }
+.selecao-genero { 
+    margin: 25px 0; 
+    text-align: center; 
+    width: 100%;
+}
+.selecao-genero p { 
+    margin-bottom: 15px; 
+    font-weight: bold; 
+    color: #555; 
+}
+.radio-genero { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin: 12px 0; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+}
 .radio-genero input[type="radio"] { display: none; }
 .radio-custom { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 8px; position: relative; transition: all 0.3s; }
 .radio-genero input[type="radio"]:checked + .radio-custom { border-color: #4caf50; background-color: #4caf50; }
