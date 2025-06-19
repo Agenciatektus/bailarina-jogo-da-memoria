@@ -102,26 +102,31 @@ function construirTabuleiro() {
     const cartasParaJogo = [...imagensDaFase, ...imagensDaFase];
     cartasParaJogo.sort(() => Math.random() - 0.5);
     
-    // =================================================================
-    // MUDANÇA PRINCIPAL AQUI - CONSTRUÇÃO ROBUSTA DOS ELEMENTOS
-    // =================================================================
+    // Construção das cartas com carregamento robusto de imagens
     cartasParaJogo.forEach(nomeImagem => {
         const carta = document.createElement('div');
         carta.classList.add('carta-memoria');
         carta.dataset.personagem = nomeImagem;
 
-        // Criamos cada imagem como um objeto, em vez de usar texto
+        // Criamos cada imagem com tratamento de erro
         const imgFrente = document.createElement('img');
         imgFrente.classList.add('frente-carta');
-        imgFrente.src = `imagens/${nomeImagem}.png`;
+        imgFrente.src = `./imagens/${nomeImagem}.png`;
         imgFrente.alt = nomeImagem;
+        imgFrente.onerror = function() {
+            console.log(`Erro ao carregar imagem: ${nomeImagem}.png`);
+            this.src = './imagens/verso.png'; // Fallback para verso
+        };
 
         const imgVerso = document.createElement('img');
         imgVerso.classList.add('verso-carta');
-        imgVerso.src = `imagens/verso.png`;
+        imgVerso.src = `./imagens/verso.png`;
         imgVerso.alt = 'Verso da Carta';
+        imgVerso.onerror = function() {
+            console.log('Erro ao carregar imagem do verso');
+        };
 
-        // Adicionamos as imagens à carta, e a carta ao tabuleiro
+        // Garantir que as imagens carreguem antes de adicionar eventos
         carta.appendChild(imgFrente);
         carta.appendChild(imgVerso);
         tabuleiro.appendChild(carta);
