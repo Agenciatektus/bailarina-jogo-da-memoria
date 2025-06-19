@@ -179,18 +179,147 @@ body.tema-menina #input-nome { border-color: #f8bbd0; }
 
 /* MEDIA QUERIES */
 @media (max-width: 500px) { 
-    .modal-conteudo { width: 90%; padding: 20px 15px; } 
-    .modal-conteudo h2 { font-size: 2em; } 
-    .carta-memoria { height: 110px; }
-    .tabuleiro-memoria { min-height: 240px; gap: 8px; }
+    body {
+        padding: 10px;
+    }
+
+    #tela-inicial h1 {
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+
+    .form-jogador {
+        width: 100%;
+    }
+
+    #input-nome {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .selecao-genero {
+        margin: 20px 0;
+    }
+
+    .radio-genero {
+        font-size: 1em;
+        margin: 10px 0;
+    }
+
+    /* Ajustes do tabuleiro para mobile */
+    .tabuleiro-memoria {
+        gap: 5px;
+        width: 100%;
+        min-height: auto;
+        aspect-ratio: 1;
+        margin: 10px 0;
+    }
+
+    .carta-memoria {
+        min-height: 0;
+        aspect-ratio: 1;
+    }
+
+    .info-jogo {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .info-jogo span {
+        padding: 5px 10px;
+        min-width: auto;
+    }
+
+    /* Ajustes do modal para mobile */
+    .modal-conteudo {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .modal-conteudo h2 {
+        font-size: 1.5em;
+    }
+
+    #modal-botoes button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin: 5px;
+        width: 100%;
+    }
+
+    /* Ajustes do ranking para mobile */
+    .ranking-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .ranking-header span,
+    #lista-ranking .ranking-item span {
+        font-size: 0.9em;
+    }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
-    .carta-memoria { height: 130px; }
-    .tabuleiro-memoria { min-height: 280px; gap: 10px; }
+    .tabuleiro-memoria {
+        gap: 8px;
+        width: 95%;
+        min-height: auto;
+        aspect-ratio: 1;
+    }
+
+    .carta-memoria {
+        min-height: 0;
+        aspect-ratio: 1;
+    }
+
+    .info-jogo {
+        font-size: 1.1em;
+    }
 }
 
 @media (min-width: 769px) {
-    .carta-memoria { height: 150px; }
-    .tabuleiro-memoria { min-height: 320px; gap: 12px; }
+    .tabuleiro-memoria {
+        gap: 10px;
+        min-height: auto;
+        aspect-ratio: 1;
+    }
+
+    .carta-memoria {
+        min-height: 0;
+        aspect-ratio: 1;
+    }
+}
+
+/* Orientação Landscape para mobile */
+@media (max-width: 900px) and (orientation: landscape) {
+    body {
+        padding: 5px;
+    }
+
+    #tela-inicial h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .tabuleiro-memoria {
+        width: auto;
+        height: 80vh;
+        aspect-ratio: auto;
+    }
+
+    .info-jogo {
+        margin-bottom: 5px;
+    }
+
+    .form-jogador {
+        margin-bottom: 15px;
+    }
+
+    .selecao-genero {
+        margin: 10px 0;
+    }
+
+    .radio-genero {
+        margin: 5px 0;
+    }
 }
