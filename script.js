@@ -17,15 +17,17 @@ const btnVerRanking = document.querySelector('#btn-ver-ranking');
 const btnVoltar = document.querySelector('#btn-voltar');
 
 // --- CONFIGURAÇÃO ---
-const todasImagens = ['bailarina', 'sapatilha', 'laco', 'coroa', 'elza-frozen', 'ana-frozen', 'olaf-2', 'moana', 'sonic-e-tales', 'stitch', 'tales', 'knokles'];
+const todasImagens = ['bailarina', 'sapatilha', 'laco', 'coroa', 'elza-frozen', 'ana-frozen', 'olaf-2', 'moana', 'sonic-e-tales', 'stitch', 'tales', 'knokles', 'estrela', 'frozen-final_1', 'stitch-mordendo', 'shadow', 'vestido'];
 const fases = [
-    { nivel: 1, pares: 4, colunas: 4, linhas: 2 },
+    { nivel: 1, pares: 3, colunas: 3, linhas: 2 },
     { nivel: 2, pares: 6, colunas: 4, linhas: 3 },
-    { nivel: 3, pares: 8, colunas: 4, linhas: 4 }
+    { nivel: 3, pares: 8, colunas: 4, linhas: 4 },
+    { nivel: 4, pares: 10, colunas: 5, linhas: 4 },
+    { nivel: 5, pares: 12, colunas: 6, linhas: 4 }
 ];
 
 // --- ESTADO DO JOGO ---
-let jogadorAtual = '', nivelAtual = 0, pontuacaoTotal = 0;
+let jogadorAtual = '', nivelAtual = 0, pontuacaoTotal = 0, estrelasTotal = 0;
 let cartas = [], cartaFoiVirada = false, travarTabuleiro = false, primeiraCarta, segundaCarta, paresEncontrados = 0, tentativasErradas = 0, segundosPassados = 0, cronometroInterval = null;
 
 // --- GESTÃO DE TELAS ---
@@ -48,6 +50,7 @@ function iniciarDesafio() {
         jogadorAtual = nome;
         nivelAtual = 0;
         pontuacaoTotal = 0;
+        estrelasTotal = 0;
         mostrarTela('tela-jogo');
         construirTabuleiro();
     }
@@ -55,7 +58,7 @@ function iniciarDesafio() {
 
 function salvarPontuacao() {
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    const novaPontuacao = { nome: jogadorAtual, pontos: pontuacaoTotal };
+    const novaPontuacao = { nome: jogadorAtual, pontos: pontuacaoTotal, estrelas: estrelasTotal };
     ranking.push(novaPontuacao);
     localStorage.setItem('ranking', JSON.stringify(ranking));
 }
@@ -70,7 +73,8 @@ function mostrarRanking() {
         ranking.forEach((jogador, index) => {
             const item = document.createElement('div');
             item.classList.add('ranking-item');
-            item.innerHTML = `<span>${index + 1}º</span><span>${jogador.nome}</span><span>${jogador.pontos} pts</span>`;
+            const estrelas = '⭐'.repeat(jogador.estrelas || 0);
+            item.innerHTML = `<span>${index + 1}º</span><span>${jogador.nome}</span><span>${jogador.pontos} pts ${estrelas}</span>`;
             listaRanking.appendChild(item);
         });
     }
@@ -140,6 +144,12 @@ function construirTabuleiro() {
 function virarCarta() { if (travarTabuleiro || this.classList.contains('virar') || this === primeiraCarta) return; this.classList.add('virar'); if (!cartaFoiVirada) { cartaFoiVirada = true; primeiraCarta = this; } else { segundaCarta = this; travarTabuleiro = true; verificarPar(); } }
 function verificarPar() { let ehPar = primeiraCarta.dataset.personagem === segundaCarta.dataset.personagem; ehPar ? processarParCorreto() : desvirarCartas(); }
 
+function calcularEstrelas(pontuacaoNivel, tentativasErradas, segundosPassados) {
+    if (tentativasErradas <= 2 && segundosPassados <= 30) return 3; // 3 estrelas
+    if (tentativasErradas <= 5 && segundosPassados <= 60) return 2; // 2 estrelas
+    return 1; // 1 estrela
+}
+
 function processarParCorreto() {
     primeiraCarta.classList.add('par-encontrado');
     segundaCarta.classList.add('par-encontrado');
@@ -151,14 +161,19 @@ function processarParCorreto() {
         let pontuacaoNivel = PONTOS_BASE_NIVEL - (tentativasErradas * PENALIDADE_ERRO) - (segundosPassados * PENALIDADE_TEMPO);
         if (pontuacaoNivel < 100) pontuacaoNivel = 100;
         pontuacaoTotal += pontuacaoNivel;
+        
+        const estrelasNivel = calcularEstrelas(pontuacaoNivel, tentativasErradas, segundosPassados);
+        estrelasTotal += estrelasNivel;
         setTimeout(() => {
             nivelAtual++;
             if (nivelAtual < fases.length) {
-                mostrarMensagem(`Nível ${fases[nivelAtual-1].nivel} Completo!`, `Você fez ${pontuacaoNivel} pontos.`);
-                setTimeout(() => { esconderMensagem(); construirTabuleiro(); }, 2500);
+                const estrelasMensagem = '⭐'.repeat(estrelasNivel);
+                mostrarMensagem(`Nível ${fases[nivelAtual-1].nivel} Completo! ${estrelasMensagem}`, `Você fez ${pontuacaoNivel} pontos e ganhou ${estrelasNivel} estrela${estrelasNivel > 1 ? 's' : ''}!`);
+                setTimeout(() => { esconderMensagem(); construirTabuleiro(); }, 3000);
             } else {
                 salvarPontuacao();
-                mostrarMensagem(`Parabéns, ${jogadorAtual}!`, `Desafio concluído! Sua pontuação final foi: ${pontuacaoTotal} pontos.`);
+                const estrelasFinal = '⭐'.repeat(estrelasTotal);
+                mostrarMensagem(`Parabéns, ${jogadorAtual}! ${estrelasFinal}`, `Desafio concluído! Pontuação: ${pontuacaoTotal} pontos e ${estrelasTotal} estrelas!`);
                 modalBotoes.innerHTML = `<button id="btn-jogar-novamente">Jogar Novamente</button><button id="btn-ver-ranking-final">Ver Ranking</button>`;
                 document.querySelector('#btn-jogar-novamente').addEventListener('click', () => { esconderMensagem(); iniciarDesafio(); });
                 document.querySelector('#btn-ver-ranking-final').addEventListener('click', () => { esconderMensagem(); mostrarRanking(); });

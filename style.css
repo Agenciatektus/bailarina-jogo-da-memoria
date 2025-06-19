@@ -66,16 +66,16 @@ body {
 @media (max-width: 500px) { 
     .modal-conteudo { width: 90%; padding: 20px 15px; } 
     .modal-conteudo h2 { font-size: 2em; } 
-    .carta-memoria { height: 80px; }
-    .tabuleiro-memoria { min-height: 200px; gap: 5px; }
+    .carta-memoria { height: 70px; }
+    .tabuleiro-memoria { min-height: 180px; gap: 3px; }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
-    .carta-memoria { height: 100px; }
-    .tabuleiro-memoria { min-height: 250px; }
+    .carta-memoria { height: 90px; }
+    .tabuleiro-memoria { min-height: 220px; gap: 6px; }
 }
 
 @media (min-width: 769px) {
-    .carta-memoria { height: 140px; }
-    .tabuleiro-memoria { min-height: 350px; }
+    .carta-memoria { height: 120px; }
+    .tabuleiro-memoria { min-height: 300px; gap: 8px; }
 }
