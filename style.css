@@ -1,159 +1,37 @@
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
+/* ... (Todo o CSS anterior continua igual até a regra .tabuleiro-memoria) ... */
+* { padding: 0; margin: 0; box-sizing: border-box; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fce4ec; font-family: sans-serif; color: #880e4f; padding: 20px; }
+h1 { margin-bottom: 5px; text-align: center; }
+h2#info-nivel { margin-bottom: 15px; font-size: 1.5em; color: #ad1457; }
 
-body {
-    min-height: 100vh; /* Usa min-height para garantir que ocupe a tela toda */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #fce4ec;
-    font-family: sans-serif;
-    color: #880e4f;
-    padding: 20px;
-}
-
-h1 {
-    margin-bottom: 20px;
-    text-align: center; /* Garante que o título quebre linha de forma centrada */
-}
-
-/* BASE DO TABULEIRO (AGORA FLEXÍVEL) */
+/* CSS DO TABULEIRO ATUALIZADO */
 .tabuleiro-memoria {
-    width: 95%; /* Ocupa 95% da largura da tela */
-    max-width: 640px; /* Mas não passa de 640px em telas grandes */
-    aspect-ratio: 4 / 3; /* Mantém a proporção 4:3 (largura:altura) */
+    width: 95%;
+    max-width: 600px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    /* Usamos variáveis CSS que serão controladas pelo JavaScript */
+    grid-template-columns: repeat(var(--colunas, 4), 1fr);
+    grid-template-rows: repeat(var(--linhas, 2), 1fr);
+    gap: 10px;
     perspective: 1000px;
 }
 
-.carta-memoria {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+/* ... (O resto do CSS continua exatamente como estava, apenas renomeie #modal-vitoria para #modal-mensagem) ... */
 
-.frente-carta,
-.verso-carta {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    padding: 10px;
-    position: absolute;
-    border-radius: 10px;
-    background: #ffffff;
-    backface-visibility: hidden;
-}
+.carta-memoria { width: 100%; height: 100%; position: relative; cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.frente-carta, .verso-carta { width: 100%; height: 100%; object-fit: cover; padding: 5px; position: absolute; border-radius: 10px; background: #ffffff; backface-visibility: hidden; }
+.frente-carta { transform: rotateY(180deg); }
+.carta-memoria.virar { transform: rotateY(180deg); }
+.carta-memoria.par-encontrado { box-shadow: 0 0 10px 5px #69f0ae; border: 2px solid #00c853; }
 
-.frente-carta {
-    transform: rotateY(180deg);
-}
+/* MODAL RENOMEADO */
+#modal-mensagem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s; z-index: 1000; }
+#modal-mensagem.visivel { opacity: 1; visibility: visible; }
+.modal-conteudo { background-color: white; padding: 30px 50px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transform: scale(0.7); transition: transform 0.4s ease-out; }
+#modal-mensagem.visivel .modal-conteudo { transform: scale(1); }
+.modal-conteudo h2 { font-size: 3em; color: #880e4f; margin-bottom: 10px; animation: animacao-texto 1s ease-in-out; }
+@keyframes animacao-texto { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.carta-memoria.virar {
-    transform: rotateY(180deg);
-}
-
-.carta-memoria.par-encontrado {
-    box-shadow: 0 0 10px 5px #69f0ae;
-    border: 2px solid #00c853;
-}
-
-#reset-btn {
-    margin-top: 25px;
-    padding: 10px 20px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: white;
-    background-color: #ad1457;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-#reset-btn:hover {
-    background-color: #880e4f;
-    transform: scale(1.05);
-}
-
-#modal-vitoria {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s;
-    z-index: 1000;
-}
-
-#modal-vitoria.visivel {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-conteudo {
-    background-color: white; padding: 30px 50px; border-radius: 15px;
-    text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    transform: scale(0.7); transition: transform 0.4s ease-out;
-}
-
-#modal-vitoria.visivel .modal-conteudo { transform: scale(1); }
-.modal-conteudo h2 {
-    font-size: 3em; color: #880e4f; margin-bottom: 10px;
-    animation: animacao-texto 1s ease-in-out;
-}
-@keyframes animacao-texto {
-    0% { transform: translateY(-50px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
-
-
-/* ======================================= */
-/* === MEDIA QUERIES PARA RESPONSIVIDADE === */
-/* ======================================= */
-
-/* PARA TABLETS (telas até 768px de largura) */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8em;
-    }
-    .tabuleiro-memoria {
-        gap: 10px; /* Diminui o espaço entre as cartas */
-    }
-}
-
-/* PARA TELEMÓVEIS (telas até 500px de largura) */
-@media (max-width: 500px) {
-    h1 {
-        font-size: 1.5em;
-    }
-    
-    .tabuleiro-memoria {
-        /* Muda o layout para 3 colunas e 4 linhas */
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-        /* Ajusta a proporção para um layout mais vertical */
-        aspect-ratio: 3 / 4; 
-        gap: 8px; /* Espaço ainda menor entre as cartas */
-    }
-
-    .frente-carta, .verso-carta {
-        padding: 5px; /* Diminui o preenchimento interno da carta */
-    }
-
-    .modal-conteudo {
-        padding: 20px 25px; /* Diminui o tamanho da caixa de vitória */
-    }
-
-    .modal-conteudo h2 {
-        font-size: 2.2em;
-    }
-}
+/* Media Queries continuam iguais */
+@media (max-width: 768px) { h1 { font-size: 1.8em; } .tabuleiro-memoria { gap: 10px; } }
+@media (max-width: 500px) { h1 { font-size: 1.5em; } .tabuleiro-memoria { gap: 8px; } .modal-conteudo { padding: 20px 25px; } .modal-conteudo h2 { font-size: 2.2em; } }
